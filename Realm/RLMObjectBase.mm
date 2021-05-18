@@ -183,6 +183,10 @@ id RLMCreateManagedAccessor(Class cls, RLMClassInfo *info) {
     return obj;
 }
 
++ (BOOL)accessInstanceVariablesDirectly {
+    return NO;
+}
+
 - (id)valueForKey:(NSString *)key {
     if (_observationInfo) {
         return _observationInfo->valueForKey(key);
@@ -387,7 +391,15 @@ id RLMCreateManagedAccessor(Class cls, RLMClassInfo *info) {
 }
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key {
-    if (isManagedAccessorClass(self) && [class_getSuperclass(self.class) sharedSchema][key]) {
+    RLMProperty *prop = [class_getSuperclass(self.class) sharedSchema][key];
+    if (isManagedAccessorClass(self)) {
+        // Managed accessors explicitly call willChange/didChange for managed
+        // properties, so we don't want KVO to override the setters to do that
+        return !prop;
+    }
+    if (prop.swiftAccessor) {
+        // Properties with swift accessors don't have obj-c getters/setters and
+        // will explode if KVO tries to override them
         return NO;
     }
 
