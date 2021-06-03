@@ -217,8 +217,8 @@ NSArray *RLMCollectionValueForKey(Collection& collection, NSString *key, RLMClas
 
     RLMObject *accessor = RLMCreateManagedAccessor(info.rlmObjectSchema.accessorClass, &info);
 
-    // List properties need to be handled specially since we need to create a
-    // new List each time
+    // Collection properties need to be handled specially since we need to create
+    // a new collection each time
     if (info.rlmObjectSchema.isSwiftClass) {
         auto prop = info.rlmObjectSchema[key];
         if (prop.collection && prop.swiftAccessor) {
@@ -238,7 +238,11 @@ NSArray *RLMCollectionValueForKey(Collection& collection, NSString *key, RLMClas
 
     for (size_t i = 0; i < count; i++) {
         accessor->_row = collection.get(i);
-        RLMInitializeSwiftAccessorGenerics(accessor);
+        if (i == 0) {
+            // None of the property accessors for non-collection Object properties
+            // require initialization per-row so we only need to do this once
+            RLMInitializeSwiftAccessor(accessor, false);
+        }
         [array addObject:[accessor valueForKey:key] ?: NSNull.null];
     }
     return array;
@@ -285,7 +289,7 @@ void RLMCollectionSetValueForKey(id<RLMFastEnumerable> collection, NSString *key
     RLMObject *accessor = RLMCreateManagedAccessor(info->rlmObjectSchema.accessorClass, info);
     for (size_t i = 0; i < tv.size(); i++) {
         accessor->_row = tv[i];
-        RLMInitializeSwiftAccessorGenerics(accessor);
+        RLMInitializeSwiftAccessor(accessor, false);
         [accessor setValue:value forKey:key];
     }
 }
