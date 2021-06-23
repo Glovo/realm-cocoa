@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-// Copyright 2015 Realm Inc.
+// Copyright 2020 Realm Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,21 +16,24 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import <Foundation/Foundation.h>
+#import <Realm/RLMSet.h>
 #import <Realm/RLMConstants.h>
-
-NS_ASSUME_NONNULL_BEGIN
 
 @class RLMObjectBase, RLMProperty;
 
-@interface RLMOptionalBase : NSProxy
-- (instancetype)init;
+NS_ASSUME_NONNULL_BEGIN
+
+@interface RLMSet ()
+- (instancetype)initWithObjectClassName:(NSString *)objectClassName;
+- (instancetype)initWithObjectType:(RLMPropertyType)type optional:(BOOL)optional;
+- (NSString *)descriptionWithMaxDepth:(NSUInteger)depth;
+- (void)setParent:(RLMObjectBase *)parentObject property:(RLMProperty *)property;
 @end
 
-FOUNDATION_EXTERN id _Nullable RLMGetOptional(RLMOptionalBase *);
-FOUNDATION_EXTERN void RLMSetOptional(RLMOptionalBase *, id _Nullable);
+void RLMSetValidateMatchingObjectType(RLMSet *set, id value);
 
-void RLMInitializeManagedOptional(RLMOptionalBase *, RLMObjectBase *parent, RLMProperty *prop);
-void RLMInitializeUnmanagedOptional(RLMOptionalBase *, RLMObjectBase *parent, RLMProperty *prop);
+@interface RLMManagedSet : RLMSet
+- (instancetype)initWithParent:(RLMObjectBase *)parentObject property:(RLMProperty *)property;
+@end
 
 NS_ASSUME_NONNULL_END

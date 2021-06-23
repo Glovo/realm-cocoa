@@ -193,7 +193,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 @import Foundation;
 @import ObjectiveC;
 @import Realm;
-@import Realm.Private;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -273,11 +272,12 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
+@class RLMObjectSchema;
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
-SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
-@interface DynamicObject : RealmSwiftObject
+SWIFT_CLASS_NAMED("DynamicObject")
+@interface RealmSwiftDynamicObject : RealmSwiftObject
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
 - (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
 /// :nodoc:
@@ -286,18 +286,8 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 - (void)setValue:(id _Nullable)value forUndefinedKey:(NSString * _Nonnull)key;
 /// :nodoc:
 + (BOOL)shouldIncludeInDefaultSchema SWIFT_WARN_UNUSED_RESULT;
++ (RLMObjectSchema * _Nullable)sharedSchema SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
-/// :nodoc:
-/// Internal class. Do not use directly.
-SWIFT_CLASS("_TtC10RealmSwift8ListBase")
-@interface ListBase : RLMListBase
-/// Returns a human-readable description of the objects contained in the List.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -377,6 +367,9 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
 @class RLMProperty;
 
 @interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
@@ -399,7 +392,7 @@ SWIFT_CLASS_NAMED("ObjectId")
 /// An array of property names to ignore.
 + (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+- (void)setObject:(id _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)key;
 @end
 
 
@@ -439,7 +432,7 @@ SWIFT_CLASS_NAMED("ObjectId")
 /// An array of property names.
 + (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+- (void)setObject:(id _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)key;
 @end
 
 
@@ -650,7 +643,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import Foundation;
 @import Realm;
-@import Realm.Private;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -730,11 +722,12 @@ SWIFT_CLASS_NAMED("Decimal128")
 
 
 
+@class RLMObjectSchema;
 
 /// Object interface which allows untyped getters and setters for Objects.
 /// :nodoc:
-SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
-@interface DynamicObject : RealmSwiftObject
+SWIFT_CLASS_NAMED("DynamicObject")
+@interface RealmSwiftDynamicObject : RealmSwiftObject
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
 - (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
 /// :nodoc:
@@ -743,18 +736,8 @@ SWIFT_CLASS("_TtC10RealmSwift13DynamicObject")
 - (void)setValue:(id _Nullable)value forUndefinedKey:(NSString * _Nonnull)key;
 /// :nodoc:
 + (BOOL)shouldIncludeInDefaultSchema SWIFT_WARN_UNUSED_RESULT;
++ (RLMObjectSchema * _Nullable)sharedSchema SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
-/// :nodoc:
-/// Internal class. Do not use directly.
-SWIFT_CLASS("_TtC10RealmSwift8ListBase")
-@interface ListBase : RLMListBase
-/// Returns a human-readable description of the objects contained in the List.
-@property (nonatomic, readonly, copy) NSString * _Nonnull description;
-- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
-- (nonnull instancetype)initWithArray:(RLMArray<id> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -823,6 +806,9 @@ SWIFT_CLASS_NAMED("ObjectId")
 
 
 
+
+
+
 @class RLMProperty;
 
 @interface RealmSwiftEmbeddedObject (SWIFT_EXTENSION(RealmSwift))
@@ -845,7 +831,7 @@ SWIFT_CLASS_NAMED("ObjectId")
 /// An array of property names to ignore.
 + (NSArray<NSString *> * _Nonnull)ignoredProperties SWIFT_WARN_UNUSED_RESULT;
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+- (void)setObject:(id _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)key;
 @end
 
 
@@ -884,7 +870,7 @@ SWIFT_CLASS_NAMED("ObjectId")
 /// An array of property names.
 + (NSArray<NSString *> * _Nonnull)indexedProperties SWIFT_WARN_UNUSED_RESULT;
 - (id _Nullable)objectForKeyedSubscript:(NSString * _Nonnull)key SWIFT_WARN_UNUSED_RESULT;
-- (void)setObject:(id _Nullable)value forKeyedSubscript:(NSString * _Nonnull)key;
+- (void)setObject:(id _Nullable)newValue forKeyedSubscript:(NSString * _Nonnull)key;
 @end
 
 #if __has_attribute(external_source_symbol)
